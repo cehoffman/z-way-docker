@@ -19,7 +19,7 @@ ExecStart=/usr/bin/docker run \
   --env-file /etc/z-way-metadata \
   --link z-way-server:zway \
   --volumes-from z-way-server \
-  z-way/zbw:2.1.1
+  z-way/zbw
 ExecStopPre=/bin/rm /etc/z-way-metadata
 ExecStop=/usr/bin/docker stop z-way-server
 

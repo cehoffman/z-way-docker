@@ -14,13 +14,11 @@ automated fairly easily.
 
 1. Install Hypriot on a PI
 
-2. Clone this repository to the PI.
+2. Pull the server and zbw component containers from the registry.
 
     ~~~sh
-    docker build -t z-way/base:2 base
-    docker build -t z-way/server:2.1.1 server
-    docker build -t z-way/webif:2.1.1 webif
-    docker build -t z-way/zbw:2.1.1 zbw
+    docker pull cehoffman/z-way-server
+    docker pull cehoffman/z-way-zbw
     ~~~
 
 3. Copy your current z-way server configuration to a USB stick as follows.
@@ -50,21 +48,22 @@ automated fairly easily.
 
 6. Reboot to make `/dev/ttyAMA0` available for z-way usage.
 
-7. Enable systemd services to keep z-way running
+7. Enable systemd services to keep z-way running. The two unit files are
+   [z-way-server](https://github.com/cehoffman/z-way-docker/blob/master/server/z-way-server.service) and [zbw](https://gitub.com/cehoffman/z-way-docker/blob/master/zbw/zbw.service).
 
     ~~~sh
-    sudo systemd enable $PWD/server/z-way-server.service
+    sudo systemd enable z-way-server.service
     sudo systemd start z-way-server
 
-    sudo systemd enable $PWD/zbw/zbw.service
+    sudo systemd enable zbw.service
     sudo systemd start zbw
     ~~~
 
 # Notes
 
 The Mongoose configuration server image (webif) is included here, but it is
-advised not to use it because it is offers alternative ways of control system
-settings that this container process tries to control, e.g. timezone
+advised not to use it because it offers alternative ways of setting system
+configuration that this container process tries to own, e.g. timezone
 configuration.
 
 [init](init) was made with the assumption that it is run from a remote computer

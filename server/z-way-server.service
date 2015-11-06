@@ -19,7 +19,7 @@ ExecStart=/usr/bin/docker run \
   -v /mnt/z-way/current/config/maps:/opt/z-way-server/config/maps \
   -v /mnt/z-way/current/config/zddx:/opt/z-way-server/config/zddx \
   --device /dev/ttyAMA0:/dev/ttyAMA0 \
-  z-way/server:2.1.1
+  z-way/server
 ExecStop=/usr/bin/docker stop z-way-server
 
 [Install]
