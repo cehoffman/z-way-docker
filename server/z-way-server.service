@@ -1,0 +1,26 @@
+[Unit]
+Description=z-way-server main application
+Requires=docker.service local-fs.target network.target
+After=docker.service local-fs.target network.target
+
+[Service]
+Restart=always
+ExecStartPre=-/usr/bin/docker rm z-way-server
+ExecStart=/usr/bin/docker run \
+  -a STDOUT \
+  --log-opt max-size=10m \
+  --log-opt max-file=5 \
+  -p 80:8083 \
+  --name z-way-server \
+  -v /mnt/z-way/current/automation/storage:/opt/z-way-server/automation/storage \
+  -v /mnt/z-way/current/automation/userModules:/opt/z-way-server/automation/userModules \
+  -v /mnt/z-way/current/config/Configuration.xml:/opt/z-way-server/config/Configuration.xml \
+  -v /mnt/z-way/current/config/Rules.xml:/opt/z-way-server/config/Rules.xml \
+  -v /mnt/z-way/current/config/maps:/opt/z-way-server/config/maps \
+  -v /mnt/z-way/current/config/zddx:/opt/z-way-server/config/zddx \
+  --device /dev/ttyAMA0:/dev/ttyAMA0 \
+  z-way/server:2.1.1
+ExecStop=/usr/bin/docker stop z-way-server
+
+[Install]
+WantedBy=multi-user.target
