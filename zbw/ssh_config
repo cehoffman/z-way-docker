@@ -1,0 +1,12 @@
+Host zbw
+  User remote
+  Hostname find.z-wave.me
+  # RemoteForward 0.0.0.0:10000 127.0.0.1:8084
+  # RemoteForward 0.0.0.0:10001 172.17.42.1:22
+  SendEnv ZBW_*
+  ServerAliveInterval 30
+  ServerAliveCountMax 3
+  BatchMode yes
+  UserKnownHostsFile /dev/null
+  StrictHostKeyChecking no
+  IdentityFile /tmp/zbw_connect.priv

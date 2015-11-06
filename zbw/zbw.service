@@ -1,0 +1,27 @@
+[Unit]
+Description=z-way remote connection tunnel
+Requires=z-way-server.service network-online.target local-fs.target 
+After=z-way-server.service network-online.target local-fs.target 
+
+[Service]
+Restart=always
+ExecStartPre=-/usr/bin/docker rm zbw
+ExecStartPre=/bin/bash -c "/bin/echo -n PUBLIC_IP= > /etc/z-way-metadata && /bin/ip -o -4 addr show eth0 | /usr/bin/awk '{print $4}' | /usr/bin/cut -d/ -f1 >> /etc/z-way-metadata"
+ExecStart=/usr/bin/docker run \
+  -a STDOUT \
+  --log-opt max-size=1m \
+  --log-opt max-file=5 \
+  --name zbw \
+  -v /mnt/z-way/current/zbw:/etc/zbw \
+  -v /mnt/z-way/current/zbw/id_rsa.key:/tmp/zbw_connect.priv \
+  --volumes-from z-way-server \
+  --env PUBLIC_PORT=80 \
+  --env-file /etc/z-way-metadata \
+  --link z-way-server:zway \
+  --volumes-from z-way-server \
+  z-way/zbw:2.1.1
+ExecStopPre=/bin/rm /etc/z-way-metadata
+ExecStop=/usr/bin/docker stop z-way-server
+
+[Install]
+WantedBy=multi-user.target

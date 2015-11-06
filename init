@@ -1,0 +1,17 @@
+#!/usr/bin/env zsh
+
+USER=pi
+SERVER=black-pearl.local
+SYSTEMD_PATH=/etc/systemd/system/
+
+SSH_OPT=(-o 'UserKnownHostsFile /dev/null' -o 'StrictHostKeyChecking no')
+
+ssh $SSH_OPT $USER@$SERVER sudo timedatectl set-timezone America/Chicago
+ssh $SSH_OPT $USER@$SERVER "sed -i -e 's/=overlay -D\"/=overlay -D -H=0.0.0.0:2375\"/' /etc/default/docker && sudo systemctl restart docker"
+
+for dir (*(/)) { cd $dir && docker build -t z-way/$(basename $dir) . }
+
+scp $SSH_OPT **/*.service $USER@$SERVER:$SYSTEMD_PATH
+
+for file (**/*.service) ssh $SSH_OPT $USER@$SERVER "sudo systemctl enable $(basename $file)"
+
